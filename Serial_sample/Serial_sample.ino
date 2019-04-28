@@ -17,6 +17,16 @@ void print_command(int len){
   Serial.print('\n');
 }
 
+void action(int len){
+  int act_pin = command[0];
+  int onoff = command[1];
+  onoff = (onoff < 0) ? -onoff : onoff;
+  onoff %= 2;
+  if (act_pin >=2 && act_pin <=13){
+    digitalWrite(act_pin, onoff);
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   get_t = 0;
@@ -24,6 +34,8 @@ void setup() {
   state = 0;
   for (int i=0; i<command_len; i++)
     command[i] = 0;
+  for (int i=2; i<=13; i++)
+    pinMode(i, OUTPUT);
 }
 
 void loop() {
@@ -38,7 +50,7 @@ void loop() {
         }
         get_t = 0;
         if (get_char == '\n' || get_char == '\r'){
-          print_command(command_len);
+          action(command_len);
           state = 0;
         }
       }
